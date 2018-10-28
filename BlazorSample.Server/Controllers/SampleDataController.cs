@@ -14,6 +14,7 @@ namespace BlazorSample.Server.Controllers
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
+        //https://samples.openweathermap.org/data/2.5/weather?zip=23060,us&appid=b6907d289e10d714a6e88b30761fae22
 
         [HttpGet("[action]")]
         public IEnumerable<WeatherForecast> WeatherForecasts()

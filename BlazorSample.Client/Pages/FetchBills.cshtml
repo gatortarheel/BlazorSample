@@ -1,0 +1,100 @@
+﻿@using BlazorSample.Shared
+@page "/fetchbills"
+@inject HttpClient Http
+
+<h1>Monthly Bills</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+<p>random number: @dieRoll </p>
+
+<button class="btn btn-primary" onclick="@DieRoll">Roll Die</button>
+<button class="btn btn-primary" onclick="@December">December</button>
+
+<button class="btn btn-primary" onclick="@RetrieveMonth">Month</button>
+<select bind="@theMonth" id="theMonth" onchange=@DoStuff>
+    @foreach (var month in months)
+    {
+        <option value=@month>@month</option>
+    }
+</select>
+
+@if (bills == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Debit</th>
+                <th>Credit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var bill in bills)
+            {
+                <tr style="color:blue">
+                    <td style="color:blue">@bill.Date.ToShortDateString()</td>
+                    <td style="color:blue">@bill.Description</td>
+                    <td style="color:blue">@bill.Debit.EmptyIfZero()</td>
+                    <td style="color:blue">@bill.Credit.EmptyIfZero()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@functions {
+    Bill[] bills;
+    List<string> months = new List<string>();
+    string theMonth;
+
+    protected override async Task OnInitAsync()
+    {
+        bills = await Http.GetJsonAsync<Bill[]>("api/Bills/GetBills");
+
+        for (int i = 1; i <= 12; i++)
+        {
+            months.Add(i.ToString());
+        }
+
+    }
+
+    int dieRoll;
+
+    void DieRoll()
+    {
+        Random random = new Random();
+        dieRoll = random.Next(6);
+
+    }
+
+    protected async Task December()
+    {
+        bills = await Http.GetJsonAsync<Bill[]>("api/Bills/GetBills/12");
+        Random random = new Random();
+        dieRoll = random.Next(6);
+        this.StateHasChanged();
+    }
+
+    protected async Task DoStuff()
+    {
+        bills = await Http.GetJsonAsync<Bill[]>($"api/Bills/GetBills/{theMonth}");
+        Random random = new Random();
+        dieRoll = random.Next(6);
+        this.StateHasChanged();
+    }
+
+    protected async Task RetrieveMonth()
+    {
+        bills = await Http.GetJsonAsync<Bill[]>($"api/Bills/GetBills/{theMonth}");
+        Random random = new Random();
+        dieRoll = random.Next(6);
+        this.StateHasChanged();
+    }
+
+
+}

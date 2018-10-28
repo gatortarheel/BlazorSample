@@ -1,0 +1,78 @@
+﻿@page "/two-way-data-binding2"
+
+<p>
+    @* You can bind using @Property or @Field *@
+    Enter your name: <input type="text" bind="@Name" /><br />
+
+    @* Alternatively also using "Property" or "Field" *@
+    Quantity <input type="number" bind="@Quantity" /><br />
+
+
+    @* Data binding for checkboxes with boolean properties *@
+    Do you get a discount? <input type="checkbox" bind="@IsDiscount" /><br />
+
+    @* Data binding for selects with enums *@
+    Product Selection:
+    <select id="select-box" bind="@TypeOfProduct">
+        <option value=@ProductType.EDDM>@ProductType.EDDM.ToString()</option>
+        <option value=@ProductType.PM>@ProductType.PM.ToString()</option>
+        <option value=@ProductType.DigitalAds>@ProductType.DigitalAds.ToString()</option>
+    </select>
+
+</p>
+
+<h5>Hello, @Name!</h5>
+
+<p>You want to buy @Quantity of @TypeOfProduct for $@CalculatePrice().ToString("0.00").</p>
+
+@if (IsDiscount)
+{
+    <p>You get a discount!</p>
+}
+
+@functions {
+    private enum ProductType { EDDM, PM, DigitalAds };
+    private ProductType TypeOfProduct { get; set; } = ProductType.EDDM;
+
+    private string Name { get; set; } = "Friend";
+    private bool IsDiscount { get; set; } = true;
+
+    public int Quantity { get; set; }
+
+    public decimal Price
+    {
+        get;
+        set;
+    }
+
+    public decimal CalculatePrice()
+    {
+        if(Quantity > 5000)
+        {
+            IsDiscount = true;
+        }
+        else
+        {
+            IsDiscount = false;
+        }
+       
+
+        Price = Convert.ToDecimal(Quantity * .95);
+
+        if(TypeOfProduct == ProductType.DigitalAds)
+        {
+            Price = Convert.ToDecimal(Quantity * .05);
+        }
+        if(TypeOfProduct == ProductType.EDDM)
+        {
+            Price = Convert.ToDecimal(Quantity * .55);
+        }
+
+        if(IsDiscount)
+        {
+            Price = Price * Convert.ToDecimal(.95);
+        }
+        return Price;
+        
+    }
+}
