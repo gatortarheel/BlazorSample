@@ -9,9 +9,11 @@
 
 <button class="btn btn-primary" onclick="@DieRoll">Roll Die</button>
 <button class="btn btn-primary" onclick="@December">December</button>
-
 <button class="btn btn-primary" onclick="@RetrieveMonth">Month</button>
-<select bind="@theMonth" id="theMonth" onchange=@DoStuff>
+Credit Card Balance:<input type="text" bind="@CreditCardBalance" /><br />
+<button class="btn btn-secondary" onclick="@Analyze">Analyze</button>
+
+<select bind="@theMonth" id="theMonth">
     @foreach (var month in months)
     {
         <option value=@month>@month</option>
@@ -47,10 +49,46 @@ else
     </table>
 }
 
+@if (groupBills == null)
+{
+    <p><em>no analysis...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Debit</th>
+                <th>Credit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var bill in groupBills)
+            {
+                <tr style="color:blue">
+                    <td style="color:blue">@bill.Date.ToShortDateString()</td>
+                    <td style="color:blue">@bill.Description</td>
+                    <td style="color:blue">@bill.Debit.EmptyIfZero()</td>
+                    <td style="color:blue">@bill.Credit.EmptyIfZero()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+
+
+
+
 @functions {
     Bill[] bills;
+    List<Bill> groupBills;
     List<string> months = new List<string>();
     string theMonth;
+    string CreditCardBalance;
 
     protected override async Task OnInitAsync()
     {
@@ -60,7 +98,7 @@ else
         {
             months.Add(i.ToString());
         }
-
+        this.StateHasChanged();
     }
 
     int dieRoll;
@@ -69,7 +107,6 @@ else
     {
         Random random = new Random();
         dieRoll = random.Next(6);
-
     }
 
     protected async Task December()
@@ -94,6 +131,19 @@ else
         Random random = new Random();
         dieRoll = random.Next(6);
         this.StateHasChanged();
+    }
+
+    protected async Task Analyze()
+    {
+        bills = await Http.GetJsonAsync<Bill[]>($"api/Bills/Analyze/{theMonth}");
+
+        var groupedBills = bills
+    .GroupBy(u => u.Credit)
+    .Select(grp => grp.ToList());
+
+
+        this.StateHasChanged();
+
     }
 
 
