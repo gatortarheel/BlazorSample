@@ -28,7 +28,7 @@
 
         public DateTime CalculateDateTimeFromMonth(int month)
         {
-            return new DateTime(DateTime.Now.Year, month, DateTime.Now.Day);
+            return new DateTime(DateTime.Now.Year, month, 15);
         }
 
         [HttpPost("[action]/{id}")]

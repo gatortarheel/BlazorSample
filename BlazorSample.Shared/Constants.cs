@@ -43,7 +43,7 @@
             public const decimal Mortgage = 1594.22M;
             public const decimal Sprint = 235.99M;
             public const decimal YMCA = 82;
-            public const decimal PayCheck = 3950.93M;
+            public const decimal PayCheck = 1999.99M;
             public const decimal Comcast = 171.46M;
             public const decimal VirginiaPower = 111.99M;
             public const decimal CityOfRichmond = 99;
