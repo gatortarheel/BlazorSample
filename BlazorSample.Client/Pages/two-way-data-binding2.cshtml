@@ -55,7 +55,9 @@
         {
             IsDiscount = false;
         }
-       
+
+        int num = 0;
+        return num.ToString().Length;
 
         Price = Convert.ToDecimal(Quantity * .95);
 
@@ -73,6 +75,6 @@
             Price = Price * Convert.ToDecimal(.95);
         }
         return Price;
-        
+
     }
 }
